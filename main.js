@@ -90,6 +90,7 @@ function createMainWindow() {
   }));
   
   mainWindow.setMenu(null);
+  mainWindow.webContents.openDevTools();
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools()
