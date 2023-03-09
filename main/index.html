@@ -25,6 +25,7 @@
 
     <script src="svgparser.js"></script>
     <script src="deepnest.js"></script>
+    <script src="autorun.js"></script>
 
     <script>
       // UI-specific stuff in this script
@@ -1419,6 +1420,25 @@
         const url = require("url");
 
         window.loginWindow = null;
+
+        // Run the app
+        var MAX_ITERATIONS = 1;
+        function autorun() {
+          let inputFileContents;
+          const dirpath = "/Users/work/projects/Deepnest/samples",
+            filename = "bitmaps.svg";
+          const filePath = path.join(dirpath, filename);
+          // Read the input.svg file and log its contents to the console
+          try {
+            inputFileContents = fs.readFileSync(filePath, "utf8");
+            console.log(`Contents of input file read succesfully`);
+          } catch (err) {
+            throw err;
+          }
+          importData(inputFileContents, filename, dirpath, null);
+		  startnest();
+        }
+        autorun();
       });
 
       ipcRenderer.on("background-progress", (event, p) => {
@@ -1512,7 +1532,6 @@
 
         return "0 seconds";
       }
-
     </script>
   </head>
   <body>
