@@ -906,16 +906,19 @@
         function autorun() {
           let inputFileContents;
           const dirpath = DIRECTORY,
-            filename = "bitmaps.svg";
-          const filePath = path.join(dirpath, filename);
-          // Read the input.svg file and log its contents to the console
-          try {
-            inputFileContents = fs.readFileSync(filePath, "utf8");
-            console.log(`Contents of input file read succesfully`);
-          } catch (err) {
-            throw err;
-          }
-          importData(inputFileContents, filename, dirpath, null);
+            filenames = ["box.svg", "parts.svg"];
+          // load every file in filenames
+          filenames.forEach((filename) => {
+            const filePath = path.join(dirpath, filename);
+            // Read the input.svg file and log its contents to the console
+            try {
+              inputFileContents = fs.readFileSync(filePath, "utf8");
+              console.log(`Contents of input file read succesfully`);
+              importData(inputFileContents, filename, dirpath, null);
+            } catch (err) {
+              throw err;
+            }
+          });
           Object.assign(DeepNest.parts[0], {
             sheet: true,
             selected: true,
@@ -937,7 +940,7 @@
             path.join(DIRECTORY, "deepnest.svg"),
             exportNest(selected.pop())
           );
-          //ipcRenderer.send("autorun-quit");
+          ipcRenderer.send("autorun-quit");
         }
         ipcRenderer.once("start-autorun", (evt, { directory, iterations }) => {
           DIRECTORY = directory;

@@ -15,7 +15,7 @@ const options = yargs
   .option("iterations", {
     alias: "iterations",
     describe: "The maximum number of iterations to run",
-    default: 1,
+    default: 10,
     type: "number",
   }).argv;
 // Get the directory argument from the options object
@@ -122,7 +122,7 @@ function createBackgroundWindows() {
 app.on("ready", () => {
   createMainWindow();
   mainWindow.once("ready-to-show", () => {
-    mainWindow.show();
+    //mainWindow.show();
     createBackgroundWindows();
   });
   mainWindow.on("closed", () => {
@@ -154,7 +154,7 @@ app.on("before-quit", function () {
 });
 
 ipcMain.on("autorun-quit", function (event, payload) {
-  console.log("automatic quit!");
+  console.log("Done!");
   app.quit();
 });
 
@@ -162,7 +162,7 @@ ipcMain.on("autorun-quit", function (event, payload) {
 //ipcMain.on('background-start', (event, payload) => backgroundWindows[0].webContents.send('background-start', payload));
 
 ipcMain.on("background-start", function (event, payload) {
-  console.log("starting background!");
+  //console.log("starting background!");
   for (var i = 0; i < backgroundWindows.length; i++) {
     if (backgroundWindows[i] && !backgroundWindows[i].isBusy) {
       backgroundWindows[i].isBusy = true;
@@ -197,7 +197,7 @@ ipcMain.on("background-stop", function (event) {
 
   createBackgroundWindows();
 
-  console.log("stopped!", backgroundWindows);
+  //console.log("stopped!", backgroundWindows);
 });
 
 ipcMain.on("login-success", function (event, payload) {
