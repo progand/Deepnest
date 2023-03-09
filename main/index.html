@@ -25,7 +25,6 @@
 
     <script src="svgparser.js"></script>
     <script src="deepnest.js"></script>
-    <script src="autorun.js"></script>
 
     <script>
       // UI-specific stuff in this script
@@ -901,7 +900,7 @@
         document.querySelector("#startnest").onclick = startnest;
 
         // Run the app
-        const MAX_ITERATIONS = 1,
+        var MAX_ITERATIONS = 1,
           DIRECTORY = "/Users/work/projects/Deepnest/samples";
         var iterations = 0;
         function autorun() {
@@ -938,9 +937,11 @@
             path.join(DIRECTORY, "deepnest.svg"),
             exportNest(selected.pop())
           );
-		  ipcRenderer.send("autorun-quit");
+          //ipcRenderer.send("autorun-quit");
         }
-        ipcRenderer.once("start-autorun", () => {
+        ipcRenderer.once("start-autorun", (evt, { directory, iterations }) => {
+          DIRECTORY = directory;
+          MAX_ITERATIONS = iterations;
           autorun();
         });
 

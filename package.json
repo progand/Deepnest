@@ -41,7 +41,7 @@
     "paralleljs": "^0.2.1",
     "request": "^2.79.0",
     "write-file-queue": "0.0.1",
-    "yargs": "^15.4.1"
+    "yargs": "^10.1.2"
   },
   "build": {
     "appId": "com.deepnest.io",

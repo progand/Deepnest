@@ -1,6 +1,26 @@
 const electron = require("electron");
 const { ipcMain } = electron;
 const fs = require("graceful-fs");
+const path = require("path");
+const url = require("url");
+const yargs = require("yargs");
+const options = yargs
+  .usage("Usage: $0 --directory <directory>")
+  .option("directory", {
+    alias: "directory",
+    describe: "The directory containing the input files",
+    default: "./", // Default to the current directory
+    type: "string",
+  })
+  .option("iterations", {
+    alias: "iterations",
+    describe: "The maximum number of iterations to run",
+    default: 1,
+    type: "number",
+  }).argv;
+// Get the directory argument from the options object
+const directory = path.resolve(__dirname, options.directory);
+const iterations = options.iterations;
 
 // Module to control application life.
 const app = electron.app;
@@ -9,9 +29,6 @@ app.commandLine.appendSwitch("--enable-precise-memory-info");
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-
-const path = require("path");
-const url = require("url");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -94,7 +111,7 @@ function createBackgroundWindows() {
       // back.show();
       winCount++;
       createBackgroundWindows();
-      mainWindow.webContents.send("start-autorun");
+      mainWindow.webContents.send("start-autorun", { directory, iterations });
     });
   }
 }
