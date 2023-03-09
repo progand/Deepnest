@@ -2,7 +2,7 @@ global.VERSION = "0.0.1";
 const fs = require("fs");
 const path = require("path");
 const yargs = require("yargs");
-const readInputFile = require("./console/readInputFile");
+const readInputFile = require("./readInputFile");
 
 var ext = ".svg";
 var filename = "input";
@@ -25,5 +25,5 @@ if (!inputFileContents) {
   process.exit(1);
 }
 
-require("./console/lib/deepnest");
+require("./lib/deepnest");
 console.log(global.DeepNest);
