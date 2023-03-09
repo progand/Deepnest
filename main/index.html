@@ -880,6 +880,7 @@
                   this.DeepNest.nests.length > 0
                 ) {
                   stopnest();
+                  autoexport();
                 }
               };
 
@@ -900,11 +901,12 @@
         document.querySelector("#startnest").onclick = startnest;
 
         // Run the app
-        const MAX_ITERATIONS = 1;
+        const MAX_ITERATIONS = 1,
+          DIRECTORY = "/Users/work/projects/Deepnest/samples";
         var iterations = 0;
         function autorun() {
           let inputFileContents;
-          const dirpath = "/Users/work/projects/Deepnest/samples",
+          const dirpath = DIRECTORY,
             filename = "bitmaps.svg";
           const filePath = path.join(dirpath, filename);
           // Read the input.svg file and log its contents to the console
@@ -923,6 +925,19 @@
           setTimeout(() => {
             startnest();
           }, 100);
+        }
+        function autoexport() {
+          var selected = DeepNest.nests.filter(function (n) {
+            return n.selected;
+          });
+
+          if (selected.length == 0) {
+            return false;
+          }
+          fs.writeFileSync(
+            path.join(DIRECTORY, "deepnest-" + Date.now() + ".svg"),
+            exportNest(selected.pop())
+          );
         }
         ipcRenderer.once("start-autorun", () => {
           autorun();
