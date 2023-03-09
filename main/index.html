@@ -193,9 +193,9 @@
           }
 
           /*var scaledinputs = document.querySelectorAll('[data-conversion]');
-				Array.from(scaledinputs).forEach(si => {
-					si.value = c[si.getAttribute('data-config')]/scale.value;
-				});*/
+      Array.from(scaledinputs).forEach(si => {
+      	si.value = c[si.getAttribute('data-config')]/scale.value;
+      });*/
 
           var inputs = document.querySelectorAll(
             "#config input, #config select"
@@ -649,12 +649,12 @@
                             console.log("con", con);
 
                             /*if(unit == 'inch'){
-													con = 72;
-												}
-												else{
-													// mm
-													con = 2.83465;
-												}*/
+      									con = 72;
+      								}
+      								else{
+      									// mm
+      									con = 2.83465;
+      								}*/
                           }
 
                           // dirpath is used for loading images embedded in svg files
@@ -847,30 +847,40 @@
               document.querySelector("#main").className = "";
               document.querySelector("#nest").className = "active";
 
-              var displayCallback = function () {
-                // render latest nest if none are selected
-                var selected = this.DeepNest.nests.filter(function (n) {
-                  return n.selected;
-                });
-
-                // only change focus if latest nest is selected
-                if (
-                  selected.length == 0 ||
-                  (this.DeepNest.nests.length > 1 &&
-                    this.DeepNest.nests[1].selected)
-                ) {
-                  this.DeepNest.nests.forEach(function (n) {
-                    n.selected = false;
+              var displayCallback = function (success) {
+                iterations++;
+                if (success) {
+                  // render latest nest if none are selected
+                  var selected = this.DeepNest.nests.filter(function (n) {
+                    return n.selected;
                   });
-                  displayNest(this.DeepNest.nests[0]);
-                  this.DeepNest.nests[0].selected = true;
+
+                  // only change focus if latest nest is selected
+                  if (
+                    selected.length == 0 ||
+                    (this.DeepNest.nests.length > 1 &&
+                      this.DeepNest.nests[1].selected)
+                  ) {
+                    this.DeepNest.nests.forEach(function (n) {
+                      n.selected = false;
+                    });
+                    displayNest(this.DeepNest.nests[0]);
+                    this.DeepNest.nests[0].selected = true;
+                  }
+
+                  this.nest.update("nests");
+
+                  // enable export button
+                  document.querySelector("#export_wrapper").className =
+                    "active";
+                  document.querySelector("#export").className = "button export";
                 }
-
-                this.nest.update("nests");
-
-                // enable export button
-                document.querySelector("#export_wrapper").className = "active";
-                document.querySelector("#export").className = "button export";
+                if (
+                  iterations >= MAX_ITERATIONS &&
+                  this.DeepNest.nests.length > 0
+                ) {
+                  stopnest();
+                }
               };
 
               deleteCache();
@@ -889,20 +899,52 @@
 
         document.querySelector("#startnest").onclick = startnest;
 
+        // Run the app
+        const MAX_ITERATIONS = 1;
+        var iterations = 0;
+        function autorun() {
+          let inputFileContents;
+          const dirpath = "/Users/work/projects/Deepnest/samples",
+            filename = "bitmaps.svg";
+          const filePath = path.join(dirpath, filename);
+          // Read the input.svg file and log its contents to the console
+          try {
+            inputFileContents = fs.readFileSync(filePath, "utf8");
+            console.log(`Contents of input file read succesfully`);
+          } catch (err) {
+            throw err;
+          }
+          importData(inputFileContents, filename, dirpath, null);
+          Object.assign(DeepNest.parts[0], {
+            sheet: true,
+            selected: true,
+          });
+          iteration = 0;
+          setTimeout(() => {
+            startnest();
+          }, 100);
+        }
+        ipcRenderer.once("start-autorun", () => {
+          autorun();
+        });
+
         var stop = document.querySelector("#stopnest");
+        var stopnest = function () {
+          ipcRenderer.send("background-stop");
+          DeepNest.stop();
+          document.querySelectorAll("li.progress").forEach(function (p) {
+            p.removeAttribute("id");
+            p.className = "progress";
+          });
+          stop.className = "button stop disabled";
+          setTimeout(function () {
+            stop.className = "button start";
+            stop.innerHTML = "Start nest";
+          }, 3000);
+        };
         stop.onclick = function (e) {
           if (stop.className == "button stop") {
-            ipcRenderer.send("background-stop");
-            DeepNest.stop();
-            document.querySelectorAll("li.progress").forEach(function (p) {
-              p.removeAttribute("id");
-              p.className = "progress";
-            });
-            stop.className = "button stop disabled";
-            setTimeout(function () {
-              stop.className = "button start";
-              stop.innerHTML = "Start nest";
-            }, 3000);
+            stopnest();
           } else if (stop.className == "button start") {
             stop.className = "button stop disabled";
             setTimeout(function () {
@@ -1420,25 +1462,6 @@
         const url = require("url");
 
         window.loginWindow = null;
-
-        // Run the app
-        var MAX_ITERATIONS = 1;
-        function autorun() {
-          let inputFileContents;
-          const dirpath = "/Users/work/projects/Deepnest/samples",
-            filename = "bitmaps.svg";
-          const filePath = path.join(dirpath, filename);
-          // Read the input.svg file and log its contents to the console
-          try {
-            inputFileContents = fs.readFileSync(filePath, "utf8");
-            console.log(`Contents of input file read succesfully`);
-          } catch (err) {
-            throw err;
-          }
-          importData(inputFileContents, filename, dirpath, null);
-		  startnest();
-        }
-        autorun();
       });
 
       ipcRenderer.on("background-progress", (event, p) => {

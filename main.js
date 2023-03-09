@@ -57,7 +57,7 @@ function createMainWindow() {
   mainWindow.setMenu(null);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
@@ -91,9 +91,10 @@ function createBackgroundWindows() {
     backgroundWindows[winCount] = back;
 
     back.once("ready-to-show", () => {
-      //back.show();
+      // back.show();
       winCount++;
       createBackgroundWindows();
+      mainWindow.webContents.send("start-autorun");
     });
   }
 }
