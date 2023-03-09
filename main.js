@@ -154,7 +154,11 @@ app.on("before-quit", function () {
 });
 
 ipcMain.on("autorun-quit", function (event, payload) {
-  console.log("Done!");
+  if (payload && payload.success) {
+    console.log("Success!");
+  } else {
+    console.error("Something went wrong!", payload && payload.error);
+  }
   app.quit();
 });
 
