@@ -935,9 +935,10 @@
             return false;
           }
           fs.writeFileSync(
-            path.join(DIRECTORY, "deepnest-" + Date.now() + ".svg"),
+            path.join(DIRECTORY, "deepnest.svg"),
             exportNest(selected.pop())
           );
+		  ipcRenderer.send("autorun-quit");
         }
         ipcRenderer.once("start-autorun", () => {
           autorun();

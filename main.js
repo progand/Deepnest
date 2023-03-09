@@ -136,6 +136,11 @@ app.on("before-quit", function () {
   }
 });
 
+ipcMain.on("autorun-quit", function (event, payload) {
+  console.log("automatic quit!");
+  app.quit();
+});
+
 //ipcMain.on('background-response', (event, payload) => mainWindow.webContents.send('background-response', payload));
 //ipcMain.on('background-start', (event, payload) => backgroundWindows[0].webContents.send('background-start', payload));
 
