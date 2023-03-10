@@ -28,9 +28,6 @@ Install yargs@10
 npm install yargs@10
 ```
 
-Replace `main.js` file with the one from this repository.
-Replace `main` and `samples` (optionsl) folders with the ones from this repository.
-
 ## Usage
 
 Scripts accepts `directory` and maximum `iterations` number as arguments.
