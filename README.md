@@ -9,6 +9,12 @@ You'll need to have working installation of Deepnest.
 
 ## Installation
 
+Install npm dependencies
+
+```bash
+npm install
+```
+
 Rebuild your installation and replace some files to make the tool work.
 
 ```bash
