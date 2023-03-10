@@ -9,6 +9,13 @@ You'll need to have working installation of Deepnest.
 
 ## Installation
 
+Rebuild your installation and replace some files to make the tool work.
+
+```bash
+npx electron-rebuild
+cp -R build/Release/ minkowski
+```
+
 Install yargs@10
 
 ```bash
