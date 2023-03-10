@@ -1,12 +1,29 @@
-<img src="https://deepnest.io/img/logo-large.png" alt="Deepnest" width="250">
+# Deepnest command line interface
 
-**Deepnest**: A fast, robust nesting tool for laser cutters and other CNC tools
+Command line interface for Deepnest allow you to use Deepnest without the need to use the web interface.
 
-**Download:** https://deepnest.io
+## Pre-requisites
 
-Deepnest is a desktop application based on [SVGNest](https://github.com/Jack000/SVGnest)
+You'll need to have Node.js v10 installed on your computer.
+You'll need to have working installation of Deepnest.
 
-- new nesting engine with speed critical code written in C
-- merges common lines for laser cuts
-- support for DXF files (via conversion)
-- new path approximation feature for highly complex parts
+## Installation
+
+Install yargs@10
+
+```bash
+npm install yargs@10
+```
+
+Replace `main.js` file with the one from this repository.
+Replace `main` and `samples` (optionsl) folders with the ones from this repository.
+
+## Usage
+
+Scripts accepts `directory` and maximum `iterations` number as arguments.
+Provided `directory` must contain "box.svg" and "parts.svg" input files.
+Result `deepnest.svg` file will be saved in the same directory.
+
+```bash
+npx electron . --directory ./samples --iterations 10
+```
