@@ -153,6 +153,10 @@ app.on("before-quit", function () {
   }
 });
 
+ipcMain.on("autorun-log", function (event, payload) {
+  console.log(payload);
+});
+
 ipcMain.on("autorun-quit", function (event, payload) {
   if (payload && payload.success) {
     console.log("Success!");

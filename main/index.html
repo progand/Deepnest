@@ -847,6 +847,8 @@
               document.querySelector("#nest").className = "active";
 
               var displayCallback = function (success) {
+                // console.log("display callback");
+                ipcRenderer.send("autorun-log", 'new iteration');
                 iterations++;
                 if (success) {
                   // render latest nest if none are selected
