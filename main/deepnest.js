@@ -1025,15 +1025,17 @@
 			GA.population[payload.index].fitness = payload.fitness;
 			
 			// render placement
+			let success = false;
 			if(this.nests.length == 0 || this.nests[0].fitness > payload.fitness ){
 				this.nests.unshift(payload);
 				
 				if(this.nests.length > 10){
 					this.nests.pop();
 				}
-				if(displayCallback){
-					displayCallback();
-				}
+				success = true;
+			}
+			if(displayCallback){
+				displayCallback(success);
 			}
 		});
 		

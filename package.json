@@ -9,7 +9,8 @@
     "build": "node-gyp rebuild --target=1.4.8 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
     "clean": "node-gyp clean configure build --verbose --target=1.4.8 --arch=ia32 --dist-url=https://atom.io/download/atom-shell",
     "pack": "build --dir",
-    "dist": "build"
+    "dist": "build",
+    "cons": "./console/index.js"
   },
   "repository": "https://github.com/Jack000",
   "keywords": [
@@ -26,7 +27,8 @@
   "devDependencies": {
     "electron": "^1.4.1",
     "electron-builder": "^20.26.0",
-    "electron-rebuild": "^1.4.0"
+    "electron-rebuild": "^1.4.0",
+    "eslint": "^7.32.0"
   },
   "dependencies": {
     "electron-config": "^0.2.1",
@@ -38,7 +40,8 @@
     "nan": "^2.4.0",
     "paralleljs": "^0.2.1",
     "request": "^2.79.0",
-    "write-file-queue": "0.0.1"
+    "write-file-queue": "0.0.1",
+    "yargs": "^10.1.2"
   },
   "build": {
     "appId": "com.deepnest.io",
@@ -54,6 +57,6 @@
     }
   },
   "engines": {
-    "node": ">=8 <=10"
+    "node": ">=6 <=12"
   }
 }
