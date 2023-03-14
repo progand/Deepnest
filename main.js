@@ -35,19 +35,6 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow = null;
 var backgroundWindows = [];
 
-// single instance
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
-});
-
-if (shouldQuit) {
-  app.quit();
-}
-
 function createMainWindow() {
   // Create the browser window.
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
@@ -122,7 +109,7 @@ function createBackgroundWindows() {
 app.on("ready", () => {
   createMainWindow();
   mainWindow.once("ready-to-show", () => {
-    //mainWindow.show();
+    // mainWindow.show();
     createBackgroundWindows();
   });
   mainWindow.on("closed", () => {
