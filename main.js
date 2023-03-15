@@ -17,6 +17,12 @@ const options = yargs
     describe: "The maximum number of iterations to run",
     default: 10,
     type: "number",
+  })
+  .option("debugger", {
+    alias: "debugger",
+    describe: "Show main window along with dev tools",
+    default: false,
+    type: "boolean",
   }).argv;
 // Get the directory argument from the options object
 const directory = path.resolve(__dirname, options.directory);
@@ -61,7 +67,7 @@ function createMainWindow() {
   mainWindow.setMenu(null);
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  if (options.debugger) mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
@@ -109,7 +115,7 @@ function createBackgroundWindows() {
 app.on("ready", () => {
   createMainWindow();
   mainWindow.once("ready-to-show", () => {
-    // mainWindow.show();
+    if (options.debugger) mainWindow.show();
     createBackgroundWindows();
   });
   mainWindow.on("closed", () => {
@@ -150,7 +156,7 @@ ipcMain.on("autorun-quit", function (event, payload) {
   } else {
     console.error("Something went wrong!", payload && payload.error);
   }
-  app.quit();
+  if (!options.debugger) app.quit();
 });
 
 //ipcMain.on('background-response', (event, payload) => mainWindow.webContents.send('background-response', payload));

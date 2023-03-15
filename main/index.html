@@ -848,7 +848,7 @@
 
               var displayCallback = function (success) {
                 iterations++;
-                ipcRenderer.send("autorun-log", 'iteration ' + iterations);
+                ipcRenderer.send("autorun-log", "iteration " + iterations);
                 if (success) {
                   // render latest nest if none are selected
                   var selected = this.DeepNest.nests.filter(function (n) {
@@ -928,16 +928,27 @@
         }
         function autoexport() {
           try {
-            var selected = DeepNest.nests.filter(function (n) {
-              return n.selected;
+            // sort by `placements[].sheetplacements` length
+            const getNestPartsNumber = function (nest) {
+              let num = 0;
+              for (var i = 0; i < nest.placements.length; i++) {
+                num += nest.placements[i].sheetplacements.length;
+              }
+              return num;
+            };
+            const best = DeepNest.nests.sort((nest1, nest2) => {
+              return getNestPartsNumber(nest2) - getNestPartsNumber(nest1);
             });
-
-            if (selected.length == 0) {
-              return false;
+            if (best.length == 0) {
+              ipcRenderer.send("autorun-quit", {
+                success: false,
+                error: new Error("No nests found"),
+              });
+              return;
             }
             fs.writeFileSync(
               path.join(DIRECTORY, "deepnest.svg"),
-              exportNest(selected.pop())
+              exportNest(best[0])
             );
             ipcRenderer.send("autorun-quit", { success: true });
           } catch (err) {
