@@ -875,9 +875,14 @@
                     "active";
                   document.querySelector("#export").className = "button export";
                 }
+                // a new stopping condition -
+                // if number of placed parts in nesting == number in parts.svg:
+                // stop
                 if (
-                  iterations >= MAX_ITERATIONS &&
-                  this.DeepNest.nests.length > 0
+                  this.DeepNest.nests.length > 0 &&
+                  (iterations >= MAX_ITERATIONS ||
+                    getNestPartsNumber(this.DeepNest.nests[0]) >=
+                      DeepNest.parts.length - 1)
                 ) {
                   stopnest();
                   autoexport();
@@ -904,6 +909,13 @@
         var MAX_ITERATIONS = 1,
           DIRECTORY = "/Users/work/projects/Deepnest/samples";
         var iterations = 0;
+        function getNestPartsNumber(nest) {
+          let num = 0;
+          for (var i = 0; i < nest.placements.length; i++) {
+            num += nest.placements[i].sheetplacements.length;
+          }
+          return num;
+        }
         function autorun() {
           const dirpath = DIRECTORY,
             filenames = ["box.svg", "parts.svg"];
@@ -929,13 +941,6 @@
         function autoexport() {
           try {
             // sort by `placements[].sheetplacements` length
-            const getNestPartsNumber = function (nest) {
-              let num = 0;
-              for (var i = 0; i < nest.placements.length; i++) {
-                num += nest.placements[i].sheetplacements.length;
-              }
-              return num;
-            };
             const best = DeepNest.nests.sort((nest1, nest2) => {
               return getNestPartsNumber(nest2) - getNestPartsNumber(nest1);
             });
