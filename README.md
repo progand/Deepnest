@@ -35,8 +35,18 @@ Provided `directory` must contain "box.svg" and "parts.svg" input files.
 Result `deepnest.svg` file will be saved in the same directory.
 
 ```bash
-npx electron . --directory ./samples --iterations 10
+npx electron . --directory ./samples --iterations 10 --withbox
 ```
+
+#### Options
+
+`--directory` - path to the directory with files
+
+`--iterations` - maximum number of iterations
+
+`--withbox` - show box on exported image (hidden by default)
+
+`--debugger` - show main window and open developer tools
 
 ## Debugging
 
@@ -51,6 +61,8 @@ To debug `index.html` you need:
 1. Show main window (find and uncomment `mainWindow.show()` in `main.js`)
 2. Open developer tools (find and uncomment `mainWindow.webContents.openDevTools()` in `main.js`)
 3. Add `debugger` statement in `index.html` file or it's scripts (for example, in `autorun()` function)
+
+You can also use `--debugger` option to show main window and open developer tools automatically.
 
 ### Log from 'index.html' to terminal
 

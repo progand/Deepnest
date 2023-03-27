@@ -907,7 +907,8 @@
 
         // Run the app
         var MAX_ITERATIONS = 1,
-          DIRECTORY = "/Users/work/projects/Deepnest/samples";
+          DIRECTORY = "/Users/work/projects/Deepnest/samples",
+          WITH_BOX = false;
         var iterations = 0;
         function getNestPartsNumber(nest) {
           let num = 0;
@@ -953,22 +954,26 @@
             }
             fs.writeFileSync(
               path.join(DIRECTORY, "deepnest.svg"),
-              exportNest(best[0])
+              exportNest(best[0], false, WITH_BOX)
             );
             ipcRenderer.send("autorun-quit", { success: true });
           } catch (err) {
             ipcRenderer.send("autorun-quit", { success: false, error: err });
           }
         }
-        ipcRenderer.once("start-autorun", (evt, { directory, iterations }) => {
-          try {
-            DIRECTORY = directory;
-            MAX_ITERATIONS = iterations;
-            autorun();
-          } catch (err) {
-            ipcRenderer.send("autorun-quit", { success: false, error: err });
+        ipcRenderer.once(
+          "start-autorun",
+          (evt, { directory, iterations, withBox }) => {
+            try {
+              DIRECTORY = directory;
+              MAX_ITERATIONS = iterations;
+              WITH_BOX = withBox;
+              autorun();
+            } catch (err) {
+              ipcRenderer.send("autorun-quit", { success: false, error: err });
+            }
           }
-        });
+        );
 
         var stop = document.querySelector("#stopnest");
         var stopnest = function () {
@@ -1100,7 +1105,7 @@
         };
 
         // nest save
-        var exportNest = function (n, dxf) {
+        var exportNest = function (n, dxf, withSheet) {
           var svg = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "svg"
@@ -1109,15 +1114,44 @@
           var svgwidth = 0;
           var svgheight = 0;
 
+          var sheetgroup = null;
           // create elements if they don't exist, show them otherwise
           n.placements.forEach(function (s) {
+            // `sheetgroup` represents sheet - remove if you don't need it
+            if (withSheet && !sheetgroup) {
+              var sheetgroup = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "g"
+              );
+
+              svg.appendChild(sheetgroup);
+
+              DeepNest.parts[s.sheet].svgelements.forEach(function (e) {
+                var node = e.cloneNode(false);
+                node.setAttribute("stroke", "#000000");
+                node.setAttribute("fill", "none");
+                node.removeAttribute("style");
+                sheetgroup.appendChild(node);
+              });
+            }
+
+            var sheetbounds = DeepNest.parts[s.sheet].bounds;
+            if (sheetgroup) {
+              sheetgroup.setAttribute(
+                "transform",
+                "translate(" +
+                  -sheetbounds.x +
+                  " " +
+                  (svgheight - sheetbounds.y) +
+                  ")"
+              );
+            }
+
             var group = document.createElementNS(
               "http://www.w3.org/2000/svg",
               "g"
             );
             svg.appendChild(group);
-
-            var sheetbounds = DeepNest.parts[s.sheet].bounds;
 
             group.setAttribute(
               "transform",

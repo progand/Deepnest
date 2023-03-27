@@ -18,6 +18,12 @@ const options = yargs
     default: 10,
     type: "number",
   })
+  .option("withbox", {
+    alias: "withbox",
+    describe: "Show box on exported image",
+    default: false,
+    type: "boolean",
+  })
   .option("debugger", {
     alias: "debugger",
     describe: "Show main window along with dev tools",
@@ -27,6 +33,7 @@ const options = yargs
 // Get the directory argument from the options object
 const directory = path.resolve(__dirname, options.directory);
 const iterations = options.iterations;
+const withBox = options.withbox;
 
 // Module to control application life.
 const app = electron.app;
@@ -104,7 +111,11 @@ function createBackgroundWindows() {
       // back.show();
       winCount++;
       createBackgroundWindows();
-      mainWindow.webContents.send("start-autorun", { directory, iterations });
+      mainWindow.webContents.send("start-autorun", {
+        directory,
+        iterations,
+        withBox,
+      });
     });
   }
 }
