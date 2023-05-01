@@ -908,7 +908,8 @@
         // Run the app
         var MAX_ITERATIONS = 1,
           DIRECTORY = "/Users/work/projects/Deepnest/samples",
-          WITH_BOX = false;
+          WITH_BOX = false,
+          EXPORT_IDS = false;
         var iterations = 0;
         function getNestPartsNumber(nest) {
           let num = 0;
@@ -939,6 +940,30 @@
           iteration = 0;
           startnest();
         }
+        function autoExportIds(best){
+          let sourceIds = [];
+          const placements = best[0].placements;
+          if(!placements) return sourceIds;
+          // collect source ids
+          for (let i = 0; i < placements.length; i++) {
+            const sheetplacements = placements[i] && placements[i].sheetplacements;
+            if(!sheetplacements) continue;
+            for (let j = 0; j < sheetplacements.length; j++) {
+              const sheetplacementItem = sheetplacements[j];
+              if(!sheetplacementItem) continue;
+              const source = sheetplacementItem.source;
+              sourceIds.push(source);
+            }
+          }
+          // map source ids to part ids
+          const parts = sourceIds.map(source => DeepNest.parts[source]);
+          const partIds = parts.map(part => Array.isArray(part.svgelements) && part.svgelements[0].id);
+          fs.writeFileSync(
+              path.join(DIRECTORY, "deepnest-parts-ids.txt"),
+              partIds.join("\n")
+            );
+          return partIds;
+        }
         function autoexport() {
           try {
             // sort by `placements[].sheetplacements` length
@@ -956,6 +981,9 @@
               path.join(DIRECTORY, "deepnest.svg"),
               exportNest(best[0], false, WITH_BOX)
             );
+            if(EXPORT_IDS){
+              autoExportIds(best);
+            }
             ipcRenderer.send("autorun-quit", { success: true });
           } catch (err) {
             ipcRenderer.send("autorun-quit", { success: false, error: err });
@@ -963,11 +991,12 @@
         }
         ipcRenderer.once(
           "start-autorun",
-          (evt, { directory, iterations, withBox }) => {
+          (evt, { directory, iterations, withBox, exportIds }) => {
             try {
               DIRECTORY = directory;
               MAX_ITERATIONS = iterations;
               WITH_BOX = withBox;
+              EXPORT_IDS = exportIds;
               autorun();
             } catch (err) {
               ipcRenderer.send("autorun-quit", { success: false, error: err });

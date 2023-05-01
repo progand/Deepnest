@@ -24,6 +24,12 @@ const options = yargs
     default: false,
     type: "boolean",
   })
+  .option("exportids", {
+    alias: "exportids",
+    describe: "Export the IDs of successfully fitted parts",
+    default: false,
+    type: "boolean",
+  })
   .option("debugger", {
     alias: "debugger",
     describe: "Show main window along with dev tools",
@@ -34,6 +40,7 @@ const options = yargs
 const directory = path.resolve(__dirname, options.directory);
 const iterations = options.iterations;
 const withBox = options.withbox;
+const exportIds = options.exportids;
 
 // Module to control application life.
 const app = electron.app;
@@ -115,6 +122,7 @@ function createBackgroundWindows() {
         directory,
         iterations,
         withBox,
+        exportIds,
       });
     });
   }

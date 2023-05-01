@@ -46,6 +46,8 @@ npx electron . --directory ./samples --iterations 10 --withbox
 
 `--withbox` - show box on exported image (hidden by default)
 
+`--exportids` - export the IDs of successfully fitted parts to `deepnest-parts-ids.txt` in the same directory
+
 `--debugger` - show main window and open developer tools
 
 ## Debugging

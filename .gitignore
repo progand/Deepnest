@@ -4,5 +4,6 @@ npm-debug.log
 package-lock.json
 .DS_Store
 samples/deepnest*.svg
+samples/deepnest*.txt
 
 
